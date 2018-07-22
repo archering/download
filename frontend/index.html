@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>这是一个下载测试页面</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<body>
+    <p>
+        注意：
+        当直接访问的某个文件时，如果该文件是二进制等浏览器无法解析的文件，浏览器才会下载该文件，但如果浏览器可以自己解析该文件，则它会打开该文件并以自己的方式呈现出来，而不会下载，此时就需要设置消息响应头，告诉浏览器该文件需要下载而不是简单的打开。       
+    </p>
+    <div class="container">
+        <p>下载方式1 直接使用 $.get()  请求回来的文件无法打开，因为原因是jquery将返回的数据转换为了string</p>
+        <button  class="btn btn-info" id="getFile">下载文件1--- 直接redirect 文件的形式</button>
+        <p>采用原生的方法把XMLHttpRequest,并设置xhr.responseType = "blob";  // 返回类型blob</p>
+
+        <button  class="btn btn-info" id="getFile2">下载文件1_1--- 直接redirect 文件的形式</button>
+        <p></p>
+    </div>
+    <div class="container">
+        <p>采用post 请求方式 发送请求获取下载文件</p>
+        <p>For XMLHTTPRequest, just simply setup the responseType of XHR instance to either arraybuffer or blob</p>
+        <p>
+          $.ajax does not support either arraybuffer or blob as its dataType. Thus we need write a beforeSend 
+        </p>
+        <Pre>
+                $.ajaxSetup({
+                    beforeSend:function(jqXHR,settings){
+                      if (settings.dataType === 'binary'){
+                        settings.xhr().responseType='arraybuffer';
+                        settings.processData=false;
+                      }
+                    }
+                  });
+                  
+                //并给 ajax 设置返回的 dataType ="binary";
+        </Pre>        
+        <button class="btn btn-info" id="dlstream">下载文件2 ---  stream的方式</button>
+    </div>
+    <div class="container">
+        <P>这里是第三中下载，考虑ie和其他浏览器</P>
+        <button class="btn btn-info" id="read_n_dl">下载文件3 ---  读取文件并以stream的方式</button>
+    </div>
+    <script src="./src/js/index.js"></script>    
+</body>
+</html>
